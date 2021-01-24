@@ -191,13 +191,35 @@ function showData(alldata) {
           const hat = document.getElementById('hat');
           hat.innerHTML = `<h2>Hat Blocks</h2>
           Hat blocks are used to start scripts. They have a different shape and can't appear after other blocks in a sequence.</br></br>
-          Total hat blocks: ${assessment[section]['count']}<br/></br>
+          <div>Total hat blocks: ${assessment[section]['count']}<br/></br>
           Kinds of hat block:</br><div> ${assessment[section]['blocks']}</div>`;
 
         case 'sequencing':
           const sequencing = document.getElementById('sequencing');
           sequencing.innerHTML = `<h2>Sequencing</h2>
           <b>Longest sequence: ${assessment[section]['longest']}</b><br/><br/><div><b>Tip</b>: ${assessment[section]['tip']}</div>`;
+
+        case 'interaction':
+        // Should also check for variable sliders and list monitors
+          const interaction = document.getElementById('interaction');
+          interaction.innerHTML = `<h2>User interaction</h2>
+          User interaction blocks allow the user to change what happens in your project and when things happen.<br/><br/>
+         <div>Total interaction blocks: ${assessment[section]['count']}<br/></br>
+          Kinds of interaction block:</br><div> ${assessment[section]['blocks']}</div>`;
+
+        case 'repetition':
+          const repetition = document.getElementById('repetition');
+          repetition.innerHTML = `<h2>Repetition</h2>
+         <div>Total repetition blocks: ${assessment[section]['count']}<br/></br>
+          Kinds of repetition block:</br><div style="display: flex"> ${assessment[section]['blocks']}</div>`;
+
+        case 'conditional':
+          const conditional = document.getElementById('conditional');
+          conditional.innerHTML = `<h2>Conditional logic (selection)</h2>
+          Conditional logic or selection allows your code to do different things depending on whether a condition is true or false. <br/><br/>
+         <div>Total conditional blocks: ${assessment[section]['count']}<br/></br>
+          Kinds of conditional block:</br><div style="display: flex"> ${assessment[section]['blocks']}</div><div>Total boolean blocks: ${assessment[section]['booleancount']}<br/></br>
+          Kinds of boolean block:</br><div> ${assessment[section]['booleanblocks']}</div>`;
 
         case 'variables':
           const variables = document.getElementById('variables');
@@ -213,6 +235,12 @@ function showData(alldata) {
               languages: ['en'], // Optional, defaults to ['en'].
             });
     
+    scratchblocks.renderMatching('pre.assessmentblocks', {
+              //inline: true,
+              style:     'scratch3',   // Optional, defaults to 'scratch2'.
+              languages: ['en'], // Optional, defaults to ['en'].
+            });
+
     scratchblocks.renderMatching('code.inlineblocks', {
               inline: true,
               style:     'scratch3',   // Optional, defaults to 'scratch2'.

@@ -3,6 +3,7 @@ const definitions = require('./definitions');
 const tipstext = require('./tipstext');
 const opcode2sb = definitions.opcode2sb;
 const defaults = definitions.opcode2sbdefaults;
+const groups = definitions.groups;
 const tips = tipstext.tiptext;
 
 const express = require('express');
@@ -245,10 +246,9 @@ app.get('/categories/:projectId', async (req, res) => {
     scripts.push({ name: sprite.prop('name'), scripts: script });
   }
 
-  console.log(sp.prop());
-
   assessment = {};
 
+// Hat blocks
   console.log("Hat");
   hatcount = 0;
   const hats = sp.blocks().query(":hat");
@@ -258,9 +258,10 @@ app.get('/categories/:projectId', async (req, res) => {
   for (const block of hats) {
     hatcount++;
     if(!hatblocks.includes(defaults[block.prop('opcode')]))
-      hatblocks += `<code class="inlineblocks" id="scriptblocks" style="padding-right: 30px;">${defaults[block.prop('opcode')]}</code>`;
+      hatblocks += `<code class="inlineblocks" style="padding-right: 30px;">${defaults[block.prop('opcode')]}</code>`;
   }
 
+// Sequencing
   var spritecount = -1; // Don't count the Stage
   for (const s of sp.sprites())
     spritecount++;
@@ -285,8 +286,61 @@ app.get('/categories/:projectId', async (req, res) => {
   for (const s of sp.blocks().query("looks_cleargraphiceffects"))
     blockcount++;
     
+// Variables
+  var variablecount = Object.keys(sp.stage().prop('variables')).length;
 
-   var variablecount = Object.keys(sp.stage().prop('variables')).length;
+// User 
+  var interactioncount = 0;
+  var interactionblocks = [];
+  for (const b in groups['interaction'])
+  {
+    for (const block of sp.blocks().query(groups['interaction'][b]))
+    {   
+      interactioncount++;
+
+      if(!interactionblocks.includes(defaults[block.prop('opcode')]))
+        interactionblocks += `<code class="inlineblocks" style="padding-right: 30px;">${defaults[block.prop('opcode')]}</code>`;
+    }    
+  }
+
+// Repetition
+  var repetitioncount = 0;
+  var repetitionblocks = [];
+  for (const b in groups['repetition'])
+  {
+    for (const block of sp.blocks().query(groups['repetition'][b]))
+    {   
+      repetitioncount++;
+
+      if(!repetitionblocks.includes(defaults[block.prop('opcode')]))
+        repetitionblocks += `<pre style="float:left" class="assessmentblocks" style="padding-right: 30px;">${defaults[block.prop('opcode')]}</pre>`;
+    }    
+  }
+
+// Conditional 
+  var conditionalcount = 0;
+  var conditionalblocks = [];
+  for (const b in groups['conditional'])
+  {
+    for (const block of sp.blocks().query(groups['conditional'][b]))
+    {   
+      conditionalcount++;
+
+      if(!conditionalblocks.includes(defaults[block.prop('opcode')]))
+        conditionalblocks += `<pre style="float:left" class="assessmentblocks" style="margin-right: 30px;">${defaults[block.prop('opcode')]}</pre>`;
+    }    
+  }
+
+  booleancount = 0;
+  const boolean = sp.blocks().query(":boolean");
+
+  var booleanblocks = ""; 
+
+  for (const block of boolean) {
+    booleancount++;
+    if(!booleanblocks.includes(defaults[block.prop('opcode')]))
+      booleanblocks += `<code class="inlineblocks" style="padding-right: 30px;">${defaults[block.prop('opcode')]}</code>`;
+  }
 
   assessment["stats"] = { section: 'stats', spritecount: spritecount, scriptcount: scriptcount, blockcount: blockcount};
 
@@ -294,9 +348,13 @@ app.get('/categories/:projectId', async (req, res) => {
 
   assessment["sequencing"] = { section: 'sequencing', longest: longestscript, tip: tips['long_scripts']};
 
+  assessment["interaction"] = { section: 'interaction', count: interactioncount, blocks: interactionblocks, tip: ""};
+
+  assessment["repetition"] = { section: 'repetition', count: repetitioncount, blocks: repetitionblocks, tip: ""};
+
   assessment["variables"] = { section: 'variables', count: variablecount, tip: ""};
 
-  console.log("longest: " + longestscript);
+  assessment["conditional"] = { section: 'conditional', count: conditionalcount, blocks: conditionalblocks, booleancount: booleancount, booleanblocks: booleanblocks, tip: ""};
 
   res.send({ categories: counts, total: total, scripts: scripts, project: req.params.projectId, assessment: assessment });
 });
