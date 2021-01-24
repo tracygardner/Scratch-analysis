@@ -1,13 +1,15 @@
 
 const definitions = require('./definitions');
+const tipstext = require('./tipstext');
 const opcode2sb = definitions.opcode2sb;
 const defaults = definitions.opcode2sbdefaults;
+const tips = tipstext.tiptext;
 
 const express = require('express');
 const app = express();
 const port = 3000;
 
-const { loadProjectJson, loadSb3, loadCloudId, BlockCollection, SpriteCollection, Block } = require('sb-util');
+const { loadProjectJson, loadSb3, loadCloudId, BlockCollection, SpriteCollection, Block, ScratchProject, Sprite, Stage, Variable, VariableCollection, CollectionWrapper } = require('sb-util');
 
 // Get the blocks code for a block within a script
 function getScriptBlocksCode(next, sprite) {
@@ -124,6 +126,9 @@ function getComment(block, sprite)
   return text;
 }
 
+
+var scriptlength = 0;
+
 // Generate a script starting from the first block 
 function generateScript(first, sprite) {
 
@@ -146,6 +151,8 @@ function generateScript(first, sprite) {
     
     next = sprite.blocks().byId(next.prop('next'));
 
+    scriptlength += 1;
+
   } while (next)
 
   return script;
@@ -156,6 +163,7 @@ app.get('/categories/:projectId', async (req, res) => {
   //const sp = await loadProjectJson('https://projects.scratch.mit.edu/461059643');
 
   const sp = await loadCloudId(req.params.projectId);
+  var longestscript = 0;
 
   const counts = [];
   const blocks = sp.blocks();
@@ -225,16 +233,72 @@ app.get('/categories/:projectId', async (req, res) => {
     console.log(sprite.blocks());
 
     for (const block of sprite.blocks().top()) {
+      scriptlength = 0;
       script += generateScript(block, sprite);
       script += "<br/>";
+      
     }
+
+    if (scriptlength > longestscript)
+      longestscript = scriptlength;
 
     scripts.push({ name: sprite.prop('name'), scripts: script });
   }
 
   console.log(sp.prop());
 
-  res.send({ categories: counts, total: total, scripts: scripts, project: req.params.projectId });
+  assessment = {};
+
+  console.log("Hat");
+  hatcount = 0;
+  const hats = sp.blocks().query(":hat");
+
+  var hatblocks = ""; 
+
+  for (const block of hats) {
+    hatcount++;
+    if(!hatblocks.includes(defaults[block.prop('opcode')]))
+      hatblocks += `<code class="inlineblocks" id="scriptblocks" style="padding-right: 30px;">${defaults[block.prop('opcode')]}</code>`;
+  }
+
+  var spritecount = -1; // Don't count the Stage
+  for (const s of sp.sprites())
+    spritecount++;
+
+  var scriptcount = 0;
+  for (const s of sp.blocks().top())
+    scriptcount++;
+
+  var blockcount = 0;
+  // Don't count boolean or reporter blocks
+  for (const s of sp.blocks().query(":stack"))
+    blockcount++;  
+  for (const s of sp.blocks().query(":c"))
+    blockcount++;
+  for (const s of sp.blocks().query(":hat"))
+    blockcount++;
+  for (const s of sp.blocks().query(":cap"))
+    blockcount++;
+  // missing from stack blocks    
+  for (const s of sp.blocks().query("motion_setrotationstyle"))
+    blockcount++;
+  for (const s of sp.blocks().query("looks_cleargraphiceffects"))
+    blockcount++;
+    
+
+   var variablecount = Object.keys(sp.stage().prop('variables')).length;
+
+  assessment["stats"] = { section: 'stats', spritecount: spritecount, scriptcount: scriptcount, blockcount: blockcount};
+
+  assessment["hat"] = { section: 'hat', count: hatcount, blocks: hatblocks};
+
+  assessment["sequencing"] = { section: 'sequencing', longest: longestscript, tip: tips['long_scripts']};
+
+  assessment["variables"] = { section: 'variables', count: variablecount, tip: ""};
+
+  console.log("longest: " + longestscript);
+
+  res.send({ categories: counts, total: total, scripts: scripts, project: req.params.projectId, assessment: assessment });
 });
 
 app.use('/static', express.static('public'));

@@ -98,7 +98,7 @@ function showData(alldata) {
             console.log(d.data.name);
             const blockContainer = document.getElementById('blocks');
             const shapeBlocks = data.filter(b => b.name === d.data.name).pop();
-            shapeBlocksHTMLString = `<h2 style="font-family: sans-serif;">${d.data.name} </h2>`;
+            shapeBlocksHTMLString = `<h2 style="font-family: sans-serif;">${d.data.name} (${d.data.count})</h2>`;
             Object.entries(shapeBlocks.blocks).forEach(([k, v]) => {
                 //var blockscode = opcode2sb[k];
                 var blockscode = k;
@@ -172,10 +172,52 @@ function showData(alldata) {
 
     scriptcode.innerHTML = blockscode;
 
+    const assessment = alldata.assessment;
+
+    for (const section in assessment) {
+      console.log("section="+section);
+      console.log(assessment[section]);
+      
+      switch (assessment[section]['section'])
+      {
+        case 'stats':
+          const stats = document.getElementById('stats');
+          stats.innerHTML = `<h2>Overview</h2>
+          Sprites <b>${assessment[section]['spritecount']}</b></br>
+          Scripts <b>${assessment[section]['scriptcount']}</b></br>
+          Main blocks <b>${assessment[section]['blockcount']}</b></br>`;
+      
+        case 'hat':
+          const hat = document.getElementById('hat');
+          hat.innerHTML = `<h2>Hat Blocks</h2>
+          Hat blocks are used to start scripts. They have a different shape and can't appear after other blocks in a sequence.</br></br>
+          Total hat blocks: ${assessment[section]['count']}<br/></br>
+          Kinds of hat block:</br><div> ${assessment[section]['blocks']}</div>`;
+
+        case 'sequencing':
+          const sequencing = document.getElementById('sequencing');
+          sequencing.innerHTML = `<h2>Sequencing</h2>
+          <b>Longest sequence: ${assessment[section]['longest']}</b><br/><br/><div><b>Tip</b>: ${assessment[section]['tip']}</div>`;
+
+        case 'variables':
+          const variables = document.getElementById('variables');
+          variables.innerHTML = `<h2>Variables</h2>
+         You used <b>${assessment[section]['count']} variables</b> including <code class="inlineblocks" style="margin-top:10px;">(my variable)</code><br/></br><div><b>Tip</b>: ""</div>`;
+        
+      }
+    }
+
     scratchblocks.renderMatching('pre.defaultblocks', {
               //inline: true,
               style:     'scratch3',   // Optional, defaults to 'scratch2'.
               languages: ['en'], // Optional, defaults to ['en'].
             });
     
+    scratchblocks.renderMatching('code.inlineblocks', {
+              inline: true,
+              style:     'scratch3',   // Optional, defaults to 'scratch2'.
+              languages: ['en'], // Optional, defaults to ['en'].
+            });
+    
+
 }

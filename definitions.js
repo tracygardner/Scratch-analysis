@@ -345,3 +345,15 @@ module.exports.opcode2sb = {
   translate_getTranslate: '(translate %WORDS% to (English v) :: translate)',
   translate_getViewerLanguage: '(language :: translate)'
  };
+
+ module.exports.groups = {
+   repetition: ['control_repeat', 'control_repeat_until', 'control_forever', 'control_wait_until', 'wait until <>'],
+   conditional: ['control_if', 'control_if_else', 'control_wait_until'],
+   user_interaction: ['event_whenkeypressed', 'event_whenthisspriteclicked', 'event_whenstageclicked', 'sensing_askandwait', 'sensing_mousex', 'sensing_mousey', 'sensing_mousedown', 'sensing_keypressed', 'videoSensing_whenMotionGreaterThan', 'sensing_loudness'],
+   procedures: ['procedures_definition', 'procedures_call'],
+   clones: ['control_create_clone_of', 'control_delete_this_clone'],
+   broadcast: ['event_whenbroadcastreceived', 'broadcast', 'event_broadcastandwait'],
+   coordinates: ['motion_gotoxy', 'motion_glidesecstoxy', 'motion_changexby', 'motion_setx', 'motion_changeyby', 'motion_sety', 'motion_xposition', 'motion_yposition', 'sensing_mousex', 'sensing_mousey'],
+   boolean: ['operator_and','operator_or', 'operator_not'],
+   keyboard: ['event_whenkeypressed', 'sensing_keypressed']
+ };
