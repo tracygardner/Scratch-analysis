@@ -19,13 +19,6 @@ function getScriptBlocksCode(next, sprite) {
 
   var opcode = next.prop('opcode');
   blockcode = opcode2sb[opcode];
-  
-  console.log(opcode);
-
-  console.log("Inputs");
-  console.log(next.prop('inputs'));
-  console.log("Fields");
-  console.log(next.prop('fields'))
 
   switch (opcode) {
 
@@ -58,10 +51,9 @@ function getScriptBlocksCode(next, sprite) {
 }
 
 // Replace each of the inputs with the blocks code for the referenced block
-// TODO:  handle substacks here too
 function fieldReplace(block, sprite) {
 
-  console.log(`Field replace: ${sprite.prop('name')}`);
+  console.log(`Field replace: ${sprite.prop('name')}: ${block.prop('opcode')}`);
 
   var blockcode = opcode2sb[block.prop('opcode')];
   console.log(block.prop('opcode'));
@@ -75,9 +67,7 @@ function fieldReplace(block, sprite) {
   }
 
   var inputs = block.prop('inputs');
-  console.log("Replacing inputs");
-  console.log(inputs);
-
+  
   var comment = getComment(block, sprite);
 
   if(comment != "")
@@ -88,10 +78,15 @@ function fieldReplace(block, sprite) {
       blockcode = blockcode.replace(/\n/, `${comment}\n`);
     else
       blockcode += comment;
-
   }
 
+  console.log("Replacing inputs");
+  console.log(inputs);
+
   for (var i in inputs) {
+    if(inputs[i]['block'] === null)
+      continue;
+
     if (!inputs[i]['name'].includes('SUBSTACK')) {
       blockcode = blockcode.replace(`%${inputs[i]['name']}%`, fieldReplace(sprite.blocks().byId(inputs[i]['block']), sprite));
     }
@@ -106,11 +101,15 @@ function fieldReplace(block, sprite) {
     }
   }
 
+  console.log(`blockcode: ${blockcode}`);
+
   return blockcode;
 }
 
 function getComment(block, sprite)
 {
+  console.log(`Getting comment ${block.prop('id')}`);
+
   const id = block.prop('id');
   const comments = sprite.prop('comments');
   var text ="";
@@ -122,6 +121,8 @@ function getComment(block, sprite)
       continue;
     }
   }
+  console.log(`Comment: ${text}`);
+
   return text;
 }
 
