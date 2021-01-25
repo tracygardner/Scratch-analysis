@@ -119,11 +119,9 @@ function getComment(block, sprite)
     if(comments[comment]['blockId'] == id)
     {
       text =comments[comment]['text'];
-      console.log("found comment");
       continue;
     }
   }
-
   return text;
 }
 
@@ -289,17 +287,41 @@ app.get('/categories/:projectId', async (req, res) => {
 // Variables
   var variablecount = Object.keys(sp.stage().prop('variables')).length;
 
-// User 
+// User interaction
   var interactioncount = 0;
   var interactionblocks = [];
   for (const b in groups['interaction'])
   {
     for (const block of sp.blocks().query(groups['interaction'][b]))
-    {   
-      interactioncount++;
+    {  
+      // Only include if target is mouse pointer
+      if(block.prop('opcode') == 'motion_pointtowards')
+      {
+        if(sp.blocks().byId(block.prop('inputs')['TOWARDS']['block']).prop('fields')['TOWARDS']['value'].includes('mouse'))
+        {
+          interactionblocks += `<code class="inlineblocks" style="padding-right: 30px;">${fieldReplace(block, sp)}</code>`;
+          interactionblocks = interactionblocks.replace("_mouse_ v", 'mouse-pointer v');
+          interactioncount++;
+        }
+        
+        continue;
+      }
+      if(block.prop('opcode') == 'motion_glideto' || block.prop('opcode') == 'motion_goto')
+      {
+        if(sp.blocks().byId(block.prop('inputs')['TO']['block']).prop('fields')['TO']['value'].includes('mouse'))
+        {
+          interactionblocks += `<code class="inlineblocks" style="padding-right: 30px;">${fieldReplace(block, sp)}</code>`;
+          interactionblocks = interactionblocks.replace("_mouse_ v", 'mouse-pointer v');
+          interactioncount++;
+        }
+        
+        continue;
+      }
 
       if(!interactionblocks.includes(defaults[block.prop('opcode')]))
         interactionblocks += `<code class="inlineblocks" style="padding-right: 30px;">${defaults[block.prop('opcode')]}</code>`;
+
+      interactioncount++;
     }    
   }
 

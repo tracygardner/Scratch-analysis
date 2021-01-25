@@ -349,7 +349,7 @@ module.exports.opcode2sb = {
  module.exports.groups = {
    repetition: ['control_forever', 'control_repeat', 'control_repeat_until'],
    conditional: ['control_if', 'control_if_else', 'control_wait_until',],
-   interaction: ['event_whenkeypressed', 'event_whenthisspriteclicked', 'event_whenstageclicked', 'sensing_askandwait', 'sensing_mousex', 'sensing_mousey', 'sensing_mousedown', 'sensing_keypressed', 'videoSensing_whenMotionGreaterThan', 'sensing_loudness'],
+   interaction: ['event_whenkeypressed', 'event_whenthisspriteclicked', 'event_whenstageclicked', 'sensing_askandwait', 'sensing_mousex', 'sensing_mousey', 'sensing_mousedown', 'sensing_keypressed', 'videoSensing_whenMotionGreaterThan', 'sensing_loudness', 'motion_pointtowards', 'motion_goto', 'motion_glideto'],
    procedures: ['procedures_definition', 'procedures_call'],
    clones: ['control_create_clone_of', 'control_delete_this_clone'],
    broadcast: ['event_whenbroadcastreceived', 'broadcast', 'event_broadcastandwait'],

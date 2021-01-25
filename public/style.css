@@ -33,3 +33,25 @@
   border: 1px solid #ccc;
   border-top: none;
 }
+
+.assesscontent {
+  padding: 10px;
+ }
+
+.assess {
+  border: 2px solid black;
+  padding: 0px;
+  margin-bottom: 20px;
+}
+
+h2 {
+  background-color: orange;
+  color: white;
+  font-family: sans-serif;
+  padding: 4px;
+  margin: 0px;
+}
+
+h3 {
+  font-family: sans-serif;
+}

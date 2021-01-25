@@ -98,7 +98,7 @@ function showData(alldata) {
             console.log(d.data.name);
             const blockContainer = document.getElementById('blocks');
             const shapeBlocks = data.filter(b => b.name === d.data.name).pop();
-            shapeBlocksHTMLString = `<h2 style="font-family: sans-serif;">${d.data.name} (${d.data.count})</h2>`;
+            shapeBlocksHTMLString = `<h3>${d.data.name} (${d.data.count})</h3>`;
             Object.entries(shapeBlocks.blocks).forEach(([k, v]) => {
                 //var blockscode = opcode2sb[k];
                 var blockscode = k;
@@ -167,7 +167,7 @@ function showData(alldata) {
     for (const script in scripts) {
       sprite = scripts[script]['name'];
       scriptscode = scripts[script]['scripts'];
-      blockscode += `<h2>${sprite}</h2><div style="display: flex"><pre class="defaultblocks" id="scriptblocks" style="padding-right: 30px;">${scriptscode}</pre><pre style="font-size: 16px; font-family: monospace;" >${scriptscode}</pre></div>`;
+      blockscode += `<h3>${sprite}</h3><div style="display: flex"><pre class="defaultblocks" id="scriptblocks" style="padding-right: 30px;">${scriptscode}</pre><pre style="font-size: 16px; font-family: monospace;" >${scriptscode}</pre></div>`;
     }
 
     scriptcode.innerHTML = blockscode;
@@ -182,49 +182,42 @@ function showData(alldata) {
       {
         case 'stats':
           const stats = document.getElementById('stats');
-          stats.innerHTML = `<h2>Overview</h2>
-          Sprites <b>${assessment[section]['spritecount']}</b></br>
+          stats.innerHTML = `Sprites <b>${assessment[section]['spritecount']}</b></br>
           Scripts <b>${assessment[section]['scriptcount']}</b></br>
           Main blocks <b>${assessment[section]['blockcount']}</b></br>`;
       
         case 'hat':
           const hat = document.getElementById('hat');
-          hat.innerHTML = `<h2>Hat Blocks</h2>
-          Hat blocks are used to start scripts. They have a different shape and can't appear after other blocks in a sequence.</br></br>
+          hat.innerHTML = `Hat blocks are used to start scripts. They have a different shape and can't appear after other blocks in a sequence.</br></br>
           <div>Total hat blocks: ${assessment[section]['count']}<br/></br>
           Kinds of hat block:</br><div> ${assessment[section]['blocks']}</div>`;
 
         case 'sequencing':
           const sequencing = document.getElementById('sequencing');
-          sequencing.innerHTML = `<h2>Sequencing</h2>
-          <b>Longest sequence: ${assessment[section]['longest']}</b><br/><br/><div><b>Tip</b>: ${assessment[section]['tip']}</div>`;
+          sequencing.innerHTML = `<b>Longest sequence: ${assessment[section]['longest']}</b><br/><br/><div><b>Tip</b>: ${assessment[section]['tip']}</div>`;
 
         case 'interaction':
         // Should also check for variable sliders and list monitors
           const interaction = document.getElementById('interaction');
-          interaction.innerHTML = `<h2>User interaction</h2>
-          User interaction blocks allow the user to change what happens in your project and when things happen.<br/><br/>
+          interaction.innerHTML = `User interaction blocks allow the user to change what happens in your project and when things happen.<br/><br/>
          <div>Total interaction blocks: ${assessment[section]['count']}<br/></br>
           Kinds of interaction block:</br><div> ${assessment[section]['blocks']}</div>`;
 
         case 'repetition':
           const repetition = document.getElementById('repetition');
-          repetition.innerHTML = `<h2>Repetition</h2>
-         <div>Total repetition blocks: ${assessment[section]['count']}<br/></br>
+          repetition.innerHTML = `<div>Total repetition blocks: ${assessment[section]['count']}<br/></br>
           Kinds of repetition block:</br><div style="display: flex"> ${assessment[section]['blocks']}</div>`;
 
         case 'conditional':
           const conditional = document.getElementById('conditional');
-          conditional.innerHTML = `<h2>Conditional logic (selection)</h2>
-          Conditional logic or selection allows your code to do different things depending on whether a condition is true or false. <br/><br/>
+          conditional.innerHTML = `Conditional logic or selection allows your code to do different things depending on whether a condition is true or false. <br/><br/>
          <div>Total conditional blocks: ${assessment[section]['count']}<br/></br>
           Kinds of conditional block:</br><div style="display: flex"> ${assessment[section]['blocks']}</div><div>Total boolean blocks: ${assessment[section]['booleancount']}<br/></br>
           Kinds of boolean block:</br><div> ${assessment[section]['booleanblocks']}</div>`;
 
         case 'variables':
           const variables = document.getElementById('variables');
-          variables.innerHTML = `<h2>Variables</h2>
-         You used <b>${assessment[section]['count']} variables</b> including <code class="inlineblocks" style="margin-top:10px;">(my variable)</code><br/></br><div><b>Tip</b>: ""</div>`;
+          variables.innerHTML = `You used <b>${assessment[section]['count']} variables</b> including <code class="inlineblocks" style="margin-top:10px;">(my variable)</code><br/></br><div><b>Tip</b>: ""</div>`;
         
       }
     }
