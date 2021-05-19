@@ -56,7 +56,6 @@ function fieldReplace(block, sprite) {
   console.log(`Field replace: ${sprite.prop('name')}: ${block.prop('opcode')}`);
 
   var blockcode = opcode2sb[block.prop('opcode')];
-  console.log(block.prop('opcode'));
   
   var fields = block.prop('fields');
   console.log("Replacing fields");
@@ -108,7 +107,7 @@ function fieldReplace(block, sprite) {
 
 function getComment(block, sprite)
 {
-  console.log(`Getting comment ${block.prop('id')}`);
+  //console.log(`Getting comment ${block.prop('id')}`);
 
   const id = block.prop('id');
   const comments = sprite.prop('comments');
@@ -121,7 +120,7 @@ function getComment(block, sprite)
       continue;
     }
   }
-  console.log(`Comment: ${text}`);
+  //console.log(`Comment: ${text}`);
 
   return text;
 }
@@ -224,13 +223,13 @@ app.get('/categories/:projectId', async (req, res) => {
   for (const sprite of sp.sprites()) {
     //var stageblocks = sp.stage().blocks();
     console.log(sprite.prop('name'));
-    console.log(sprite.prop('comments'));
+    //console.log(sprite.prop('comments'));
 
     var allblocks = sprite.blocks();
 
     var script = "";
 
-    console.log(sprite.blocks());
+    //console.log(sprite.blocks());
 
     for (const block of sprite.blocks().top()) {
       scriptlength = 0;
@@ -248,7 +247,6 @@ app.get('/categories/:projectId', async (req, res) => {
   assessment = {};
 
 // Hat blocks
-  console.log("Hat");
   hatcount = 0;
   const hats = sp.blocks().query(":hat");
 

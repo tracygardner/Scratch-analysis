@@ -167,7 +167,7 @@ function showData(alldata) {
     for (const script in scripts) {
       sprite = scripts[script]['name'];
       scriptscode = scripts[script]['scripts'];
-      blockscode += `<h3>${sprite}</h3><div style="display: flex"><pre class="defaultblocks" id="scriptblocks" style="padding-right: 30px;">${scriptscode}</pre><pre style="font-size: 16px; font-family: monospace;" >${scriptscode}</pre></div>`;
+      blockscode += `<h3>${sprite}</h3><div width="90%" style="display: flex; flex-wrap: wrap;"><div style="padding-right: 30px; flex-basis: content; min-width: 50%;"><pre class="defaultblocks" id="scriptblocks" style="flex-basis: content;">${scriptscode}</pre></div><div style="flex-grow: 1; min-width: 400px;"><pre style="font-size: 16px; font-family: monospace;">${scriptscode}</pre></div></div><br style="clear: both;"/>`;
     }
 
     scriptcode.innerHTML = blockscode;
