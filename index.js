@@ -15,7 +15,7 @@ const { loadProjectJson, loadSb3, loadCloudId, BlockCollection, SpriteCollection
 // Get the blocks code for a block within a script
 function getScriptBlocksCode(next, sprite) {
 
-  console.log(`Generating: ${sprite.prop('name')}`);
+  //console.log(`Generating: ${sprite.prop('name')}`);
 
   var opcode = next.prop('opcode');
   blockcode = opcode2sb[opcode];
@@ -53,13 +53,13 @@ function getScriptBlocksCode(next, sprite) {
 // Replace each of the inputs with the blocks code for the referenced block
 function fieldReplace(block, sprite) {
 
-  console.log(`Field replace: ${sprite.prop('name')}: ${block.prop('opcode')}`);
+  //console.log(`Field replace: ${sprite.prop('name')}: ${block.prop('opcode')}`);
 
   var blockcode = opcode2sb[block.prop('opcode')];
   
   var fields = block.prop('fields');
-  console.log("Replacing fields");
-  console.log(fields);
+  //console.log("Replacing fields");
+  //console.log(fields);
 
   for (var i in fields) {
       blockcode = blockcode.replace(`%${fields[i]['name']}%`, fields[i]['value']);
@@ -79,8 +79,8 @@ function fieldReplace(block, sprite) {
       blockcode += comment;
   }
 
-  console.log("Replacing inputs");
-  console.log(inputs);
+  //console.log("Replacing inputs");
+  //console.log(inputs);
 
   for (var i in inputs) {
     if(inputs[i]['block'] === null)
@@ -100,7 +100,7 @@ function fieldReplace(block, sprite) {
     }
   }
 
-  console.log(`blockcode: ${blockcode}`);
+  //console.log(`blockcode: ${blockcode}`);
 
   return blockcode;
 }
@@ -134,7 +134,7 @@ function generateScript(first, sprite) {
   if(first === null)
     return "";
 
-  console.log(`Generating script: ${sprite.prop('name')}`);
+  //console.log(`Generating script: ${sprite.prop('name')}`);
 
   var next = first;
   var script = "";
@@ -143,7 +143,7 @@ function generateScript(first, sprite) {
     var opcode = next.prop('opcode');
     getScriptBlocksCode(next, sprite);
 
-    console.log(`${opcode}: ${blockcode}`);
+    //console.log(`${opcode}: ${blockcode}`);
 
     if (blockcode) 
       script += blockcode + "<br/>";
