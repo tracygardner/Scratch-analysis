@@ -1,12 +1,20 @@
-<!DOCTYPE html>
+<!doctype html>
+<html lang="en" dir="ltr">
 <head>
     <meta charset="utf-8">
     <meta name="description" content="">
     <title>Scratch Block Usage Overview</title>
     <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/scratchblocks-v3.6.0-min.js"></script>
+<script src="https://d3js.org/d3.v5.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.min.js"></script>
+<!-- Custom JS -->
+<!-- <script src="main.js"></script> -->
+<script src="/static/new.js"></script>
+<script src="/static/tabs.js"></script>
 </head>
 <body onload="showtab(event, '<%= tab %>')" style="font-family: sans-serif">
-    <h2 style="font-family: sans-serif">Scratch Project Analyzer</h2>
+    <h2 style="font-family: sans-serif">Scratch Project Analyser</h2>
     <br/>
     <a href="https://scratch-analysis.tracygardner.repl.co/478383662/project">Commented Crab</a> <br>
 
@@ -50,6 +58,14 @@
         <div id="container"></div>
         <div id="blocks"></div>
     </div>
+       <div id="datavis2" style="display: flex">
+        <div id="container2"></div>
+           <table class="blockstable">
+     <thead>
+     </thead>
+     <tbody></tbody>
+    </table>
+    </div>
 </div>
 
 <div id="code" class="tabcontent">
@@ -71,7 +87,6 @@ This section is under development.
   <div class="assess">
   <h2 style="background-color: #ffbf00">Hat Blocks</h2>
   <div id="hat" class="assesscontent">
-  
 
   </div>
   </div>
@@ -148,12 +163,7 @@ This section is under development.
 
 <div><a href="https://scratch.mit.edu/">Scratch</a> is developed and maintained by the Scratch Team at the Lifelong Kindergarten group at MIT Media Lab. This site is not affiliated with Scratch.</div>
 
-</body>
 
-<script src="/static/scratchblocks-v3.5-min.js"></script>
-<script src="https://d3js.org/d3.v5.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.min.js"></script>
-<!-- Custom JS -->
-<!-- <script src="main.js"></script> -->
-<script src="/static/new.js"></script>
-<script src="/static/tabs.js"></script>
+
+</body>
+</html>

@@ -1,6 +1,7 @@
 // Adapted from https://github.com/LLK/scratch-vm/blob/develop/src/blocks/
 // and https://github.com/scratchblocks/scratchblocks/blob/master/tests/all-blocks.txt
-module.exports.opcode2sb = {
+const opcode2b = {
+//module.exports.opcode2sb = {
   motion_movesteps: 'move %STEPS% steps',
   motion_gotoxy: 'go to x: %X% y: %Y%',
   motion_goto: 'go to %TO%',
@@ -187,7 +188,7 @@ module.exports.opcode2sb = {
   argument_reporter_string_number: '(%VALUE% :: reporter :: custom)'
 }; 
 
- module.exports.opcode2sbdefaults = {
+const opcode2sbdefaults = {
   motion_movesteps: 'move (10) steps',
   motion_gotoxy: 'go to x: (0) y: (0)',
   motion_goto: 'go to (random position v)',
@@ -346,7 +347,7 @@ module.exports.opcode2sb = {
   translate_getViewerLanguage: '(language :: translate)'
  };
 
- module.exports.groups = {
+const groups = {
    repetition: ['control_forever', 'control_repeat', 'control_repeat_until'],
    conditional: ['control_if', 'control_if_else', 'control_wait_until',],
    interaction: ['event_whenkeypressed', 'event_whenthisspriteclicked', 'event_whenstageclicked', 'sensing_askandwait', 'sensing_mousex', 'sensing_mousey', 'sensing_mousedown', 'sensing_keypressed', 'videoSensing_whenMotionGreaterThan', 'sensing_loudness', 'motion_pointtowards', 'motion_goto', 'motion_glideto'],
@@ -357,3 +358,6 @@ module.exports.opcode2sb = {
    boolean: ['operator_and','operator_or', 'operator_not'],
    keyboard: ['event_whenkeypressed', 'sensing_keypressed']
  };
+
+export default opcode2b;
+export { opcode2sbdefaults, groups };

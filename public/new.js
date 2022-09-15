@@ -1,3 +1,5 @@
+
+
 window.addEventListener("load", function() {
   function fetchProjectData() {
     const projectId = projectIdElt.value;
@@ -5,8 +7,8 @@ window.addEventListener("load", function() {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-        var res = JSON.parse(this.responseText);
-        //console.log(res);
+        var res = JSON.parse(this.responseText)        
+        console.log(res);
         showData(res);
       }
     };
@@ -31,7 +33,9 @@ window.addEventListener("load", function() {
 });
 
 async function showData(alldata) {
+  console.log(alldata)
   const data = alldata.categories;
+  console.log(alldata.categories)
   const total = 'Total blocks: ' + alldata.total;
   d3.selectAll("svg").remove();
 
@@ -39,53 +43,28 @@ async function showData(alldata) {
     height = 400,
     radius = Math.min(width, height) / 2;
 
-  const svg = d3
-    .select('#container')
-    .append('svg')
-    .attr('width', width)
-    .attr('height', height)
-    .append('g')
-    .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+  const svg = d3.select('#container').append('svg').attr('width', width).attr('height', height).append('g').attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
 
   // Set the category colors
   const color = d3.scaleOrdinal().domain(["motion", "looks", "sound", "event", "control", "sensing", "operator", "data", "procedures", "music", "videoSensing", "tts", "translate"])
     .range(["#4c97ff", "#9966ff", "#d65cd6", "#ffbf00", "#ffab19", "#4cbfe6", "#40bf4a", "#ff8c1a", "#ff6680", "#0fbd8c", "#0fbd8c", "#0fbd8c", "#0fbd8c"]);
 
-  const pie = d3
-    .pie()
-    //      .padAngle(0.005)
-    .sort(null)
-    .value(d => d.count);
+  const pie = d3.pie().sort(null).value(d => d.count);
 
-  const arc = d3
-    .arc()
-    .outerRadius(radius - 20)
-    .innerRadius(radius - 100);
+  const arc = d3.arc().outerRadius(radius - 20).innerRadius(radius - 100);
 
   const arcs = pie(data.filter(d => d.count > 0));
 
   /* ------- PIE SLICES -------*/
-  const tip = d3
-    .tip()
-    .attr('class', 'd3-tip')
-    .html(function(d) {
+  const tip = d3.tip().attr('class', 'd3-tip').html(function(d) {
       return d;
     });
+
   svg.call(tip);
 
-  var g = svg
-    .selectAll('.arc')
-    .data(pie(data))
-    .enter()
-    .append('g')
-    .attr('class', 'arc');
+  var g = svg.selectAll('.arc').data(pie(data)).enter().append('g').attr('class', 'arc');
 
-  g.append("text")
-    .attr("text-anchor", "middle")
-    .attr('font-family', 'sans-serif')
-    .attr('font-weight', 'normal')
-    .attr('font-size', 16)
-    .text(total);
+  g.append("text").attr("text-anchor", "middle").attr('font-family', 'sans-serif').attr('font-weight', 'normal').attr('font-size', 16).text(total);
 
   var scratchblocks = window.scratchblocks;
 
@@ -114,13 +93,8 @@ async function showData(alldata) {
 
   /* ------- TEXT IN PIE SLICES -------*/
 
-  svg.append('g')
-    .attr('font-family', 'sans-serif')
-    .attr('font-size', 12)
-    .attr('text-anchor', 'middle')
-    .selectAll('text')
-    .data(arcs)
-    .join('text')
+  svg.append('g').attr('font-family', 'sans-serif').attr('font-size', 12)
+    .attr('text-anchor', 'middle').selectAll('text').data(arcs).join('text')
     .attr('transform', d => `translate(${arc.centroid(d)})`)
     .call(text =>
       text
@@ -145,16 +119,14 @@ async function showData(alldata) {
 
   // Show project title
   const project = alldata.project;
-  // json does not include project name
-  // Can get it if you know username: https://api.scratch.mit.edu/users/drgardner/projects/474838099
 
   const metadata = await fetch('https://scratchdb.lefty.one/v3/project/info/' + project);
-    const meta = await metadata.json();
-    console.log(meta);
-   projecttitle = meta.title;
-   projectinstructions = meta.instructions;
-   projectdescription = meta.description;
-   projectusername = meta.username;
+  const meta = await metadata.json();
+  console.log(meta);
+  projecttitle = meta.title;
+  projectinstructions = meta.instructions;
+  projectdescription = meta.description;
+  projectusername = meta.username;
 
   const title = document.getElementById('projecttitle');
   title.innerHTML = `${projecttitle}`;

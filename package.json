@@ -1,19 +1,34 @@
 {
-  "name": "Scratch-analysis",
+  "name": "scratch-analysis",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
+  "type": "module",
   "dependencies": {
-    "express": "^4.17.1",
+    "definitions": "0.0.2",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "prybar": "^0.2.2",
     "sb-util": "0.0.1-prealpha.4",
-    "scratchblocks": "^3.5.0",
-    "ejs": "^3.1.5"
+    "scratchblocks": "^3.6.0",
+    "typescript": "^4.8.3"
   },
-  "devDependencies": {},
+  "types": "sb-utils",
+  "devDependencies": {
+    "@types/node": "^18.7.18"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "Tracy Gardner",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tracygardner/Scratch-analysis.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tracygardner/Scratch-analysis/issues"
+  },
+  "homepage": "https://github.com/tracygardner/Scratch-analysis#readme",
+  "description": ""
 }

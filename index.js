@@ -1,16 +1,23 @@
+import definitions, { opcode2sbdefaults, groups } from './definitions.js'
+//const definitions = require('./definitions');
+//const tipstext = require('./tipstext');
+import tipstext from './tipstext.js'
+//const opcode2sb = definitions.opcode2sb;
+const opcode2sb = definitions;
+//const defaults = definitions.opcode2sbdefaults;
+const defaults = opcode2sbdefaults;
+//const groups = definitions.groups;
+import tips from './tipstext.js';
 
-const definitions = require('./definitions');
-const tipstext = require('./tipstext');
-const opcode2sb = definitions.opcode2sb;
-const defaults = definitions.opcode2sbdefaults;
-const groups = definitions.groups;
-const tips = tipstext.tiptext;
-
-const express = require('express');
+// express = require('express');
+import express from 'express'
 const app = express();
+app.use(express.static(process.cwd() + '/public'));
 const port = 3000;
 
-const { loadProjectJson, loadSb3, loadCloudId, BlockCollection, SpriteCollection, Block, ScratchProject, Sprite, Stage, Variable, VariableCollection, CollectionWrapper } = require('sb-util');
+import sbutil from 'sb-util';
+
+const { loadProjectJson, loadSb3, loadCloudId, BlockCollection, SpriteCollection, Block, ScratchProject, Sprite, Stage, Variable, VariableCollection, CollectionWrapper } = sbutil;
 
 // Get the blocks code for a block within a script
 function getScriptBlocksCode(next, sprite) {
@@ -18,7 +25,7 @@ function getScriptBlocksCode(next, sprite) {
   //console.log(`Generating: ${sprite.prop('name')}`);
 
   var opcode = next.prop('opcode');
-  blockcode = opcode2sb[opcode];
+  var blockcode = opcode2sb[opcode];
 
   switch (opcode) {
 
@@ -56,24 +63,23 @@ function fieldReplace(block, sprite) {
   //console.log(`Field replace: ${sprite.prop('name')}: ${block.prop('opcode')}`);
 
   var blockcode = opcode2sb[block.prop('opcode')];
-  
+
   var fields = block.prop('fields');
   //console.log("Replacing fields");
   //console.log(fields);
 
   for (var i in fields) {
-      blockcode = blockcode.replace(`%${fields[i]['name']}%`, fields[i]['value']);
+    blockcode = blockcode.replace(`%${fields[i]['name']}%`, fields[i]['value']);
   }
 
   var inputs = block.prop('inputs');
-  
+
   var comment = getComment(block, sprite);
 
-  if(comment != "")
-  {
-    comment =  " // " + comment; 
+  if (comment != "") {
+    comment = " // " + comment;
 
-    if(inputs['SUBSTACK'] !== undefined)
+    if (inputs['SUBSTACK'] !== undefined)
       blockcode = blockcode.replace(/\n/, `${comment}\n`);
     else
       blockcode += comment;
@@ -83,18 +89,16 @@ function fieldReplace(block, sprite) {
   //console.log(inputs);
 
   for (var i in inputs) {
-    if(inputs[i]['block'] === null)
+    if (inputs[i]['block'] === null)
       continue;
 
     if (!inputs[i]['name'].includes('SUBSTACK')) {
       blockcode = blockcode.replace(`%${inputs[i]['name']}%`, fieldReplace(sprite.blocks().byId(inputs[i]['block']), sprite));
     }
-    else
-    {
+    else {
       blockcode = blockcode.replace('%SUBSTACK%', generateScript(sprite.blocks().byId(block.prop('inputs')['SUBSTACK']['block']), sprite))
 
-      if(block.prop('inputs')['SUBSTACK2'] !== undefined)
-      {
+      if (block.prop('inputs')['SUBSTACK2'] !== undefined) {
         blockcode = blockcode.replace('%SUBSTACK2%', generateScript(sprite.blocks().byId(block.prop('inputs')['SUBSTACK2']['block']), sprite));
       }
     }
@@ -105,18 +109,16 @@ function fieldReplace(block, sprite) {
   return blockcode;
 }
 
-function getComment(block, sprite)
-{
+function getComment(block, sprite) {
   //console.log(`Getting comment ${block.prop('id')}`);
 
   const id = block.prop('id');
   const comments = sprite.prop('comments');
-  var text ="";
+  var text = "";
 
-  for(var comment in comments){
-    if(comments[comment]['blockId'] == id)
-    {
-      text =comments[comment]['text'];
+  for (var comment in comments) {
+    if (comments[comment]['blockId'] == id) {
+      text = comments[comment]['text'];
       continue;
     }
   }
@@ -131,7 +133,7 @@ var scriptlength = 0;
 // Generate a script starting from the first block 
 function generateScript(first, sprite) {
 
-  if(first === null)
+  if (first === null)
     return "";
 
   //console.log(`Generating script: ${sprite.prop('name')}`);
@@ -142,12 +144,12 @@ function generateScript(first, sprite) {
   do {
     var opcode = next.prop('opcode');
     getScriptBlocksCode(next, sprite);
-
+    var blockcode = opcode2sb[opcode];
     //console.log(`${opcode}: ${blockcode}`);
 
-    if (blockcode) 
+    if (blockcode)
       script += blockcode + "<br/>";
-    
+
     next = sprite.blocks().byId(next.prop('next'));
 
     scriptlength += 1;
@@ -218,7 +220,7 @@ app.get('/categories/:projectId', async (req, res) => {
     counts.push({ name: types[blockType], count: count, blocks: blocksCount });
   }
 
-  scripts = [];
+  const scripts = [];
 
   for (const sprite of sp.sprites()) {
     //var stageblocks = sp.stage().blocks();
@@ -235,7 +237,7 @@ app.get('/categories/:projectId', async (req, res) => {
       scriptlength = 0;
       script += generateScript(block, sprite);
       script += "<br/>";
-      
+
     }
 
     if (scriptlength > longestscript)
@@ -244,21 +246,21 @@ app.get('/categories/:projectId', async (req, res) => {
     scripts.push({ name: sprite.prop('name'), scripts: script });
   }
 
-  assessment = {};
+  var assessment = {};
 
-// Hat blocks
-  hatcount = 0;
+  // Hat blocks
+  var hatcount = 0;
   const hats = sp.blocks().query(":hat");
 
-  var hatblocks = ""; 
+  var hatblocks = "";
 
   for (const block of hats) {
     hatcount++;
-    if(!hatblocks.includes(defaults[block.prop('opcode')]))
+    if (!hatblocks.includes(defaults[block.prop('opcode')]))
       hatblocks += `<code class="inlineblocks" style="padding-right: 30px;">${defaults[block.prop('opcode')]}</code>`;
   }
 
-// Sequencing
+  // Sequencing
   var spritecount = -1; // Don't count the Stage
   for (const s of sp.sprites())
     spritecount++;
@@ -270,7 +272,7 @@ app.get('/categories/:projectId', async (req, res) => {
   var blockcount = 0;
   // Don't count boolean or reporter blocks
   for (const s of sp.blocks().query(":stack"))
-    blockcount++;  
+    blockcount++;
   for (const s of sp.blocks().query(":c"))
     blockcount++;
   for (const s of sp.blocks().query(":hat"))
@@ -282,100 +284,90 @@ app.get('/categories/:projectId', async (req, res) => {
     blockcount++;
   for (const s of sp.blocks().query("looks_cleargraphiceffects"))
     blockcount++;
-    
-// Variables
+
+  // Variables
   var variablecount = Object.keys(sp.stage().prop('variables')).length;
 
-// User interaction
+  // User interaction
   var interactioncount = 0;
   var interactionblocks = [];
-  for (const b in groups['interaction'])
-  {
-    for (const block of sp.blocks().query(groups['interaction'][b]))
-    {  
+  for (const b in groups['interaction']) {
+    for (const block of sp.blocks().query(groups['interaction'][b])) {
       // Only include if target is mouse pointer
-      if(block.prop('opcode') == 'motion_pointtowards')
-      {
-        if(sp.blocks().byId(block.prop('inputs')['TOWARDS']['block']).prop('fields')['TOWARDS']['value'].includes('mouse'))
-        {
+      if (block.prop('opcode') == 'motion_pointtowards') {
+        if (sp.blocks().byId(block.prop('inputs')['TOWARDS']['block']).prop('fields')['TOWARDS']['value'].includes('mouse')) {
           interactionblocks += `<code class="inlineblocks" style="padding-right: 30px;">${fieldReplace(block, sp)}</code>`;
           interactionblocks = interactionblocks.replace("_mouse_ v", 'mouse-pointer v');
           interactioncount++;
         }
-        
+
         continue;
       }
-      if(block.prop('opcode') == 'motion_glideto' || block.prop('opcode') == 'motion_goto')
-      {
-        if(sp.blocks().byId(block.prop('inputs')['TO']['block']).prop('fields')['TO']['value'].includes('mouse'))
-        {
+      if (block.prop('opcode') == 'motion_glideto' || block.prop('opcode') == 'motion_goto') {
+        if (sp.blocks().byId(block.prop('inputs')['TO']['block']).prop('fields')['TO']['value'].includes('mouse')) {
           interactionblocks += `<code class="inlineblocks" style="padding-right: 30px;">${fieldReplace(block, sp)}</code>`;
           interactionblocks = interactionblocks.replace("_mouse_ v", 'mouse-pointer v');
           interactioncount++;
         }
-        
+
         continue;
       }
 
-      if(!interactionblocks.includes(defaults[block.prop('opcode')]))
+      if (!interactionblocks.includes(defaults[block.prop('opcode')]))
         interactionblocks += `<code class="inlineblocks" style="padding-right: 30px;">${defaults[block.prop('opcode')]}</code>`;
 
       interactioncount++;
-    }    
+    }
   }
 
-// Repetition
+  // Repetition
   var repetitioncount = 0;
   var repetitionblocks = [];
-  for (const b in groups['repetition'])
-  {
-    for (const block of sp.blocks().query(groups['repetition'][b]))
-    {   
+  for (const b in groups['repetition']) {
+    for (const block of sp.blocks().query(groups['repetition'][b])) {
       repetitioncount++;
 
-      if(!repetitionblocks.includes(defaults[block.prop('opcode')]))
+      if (!repetitionblocks.includes(defaults[block.prop('opcode')]))
         repetitionblocks += `<pre style="float:left" class="assessmentblocks" style="padding-right: 30px;">${defaults[block.prop('opcode')]}</pre>`;
-    }    
+    }
   }
 
-// Conditional 
+  // Conditional 
   var conditionalcount = 0;
   var conditionalblocks = [];
-  for (const b in groups['conditional'])
-  {
-    for (const block of sp.blocks().query(groups['conditional'][b]))
-    {   
+  for (const b in groups['conditional']) {
+    for (const block of sp.blocks().query(groups['conditional'][b])) {
       conditionalcount++;
 
-      if(!conditionalblocks.includes(defaults[block.prop('opcode')]))
+      if (!conditionalblocks.includes(defaults[block.prop('opcode')]))
         conditionalblocks += `<pre style="float:left" class="assessmentblocks" style="margin-right: 30px;">${defaults[block.prop('opcode')]}</pre>`;
-    }    
+    }
   }
 
-  booleancount = 0;
+  var booleancount = 0;
   const boolean = sp.blocks().query(":boolean");
 
-  var booleanblocks = ""; 
+  var booleanblocks = "";
 
   for (const block of boolean) {
     booleancount++;
-    if(!booleanblocks.includes(defaults[block.prop('opcode')]))
+    if (!booleanblocks.includes(defaults[block.prop('opcode')]))
       booleanblocks += `<code class="inlineblocks" style="padding-right: 30px;">${defaults[block.prop('opcode')]}</code>`;
   }
 
-  assessment["stats"] = { section: 'stats', spritecount: spritecount, scriptcount: scriptcount, blockcount: blockcount};
+  assessment["stats"] = { section: 'stats', spritecount: spritecount, scriptcount: scriptcount, blockcount: blockcount };
 
-  assessment["hat"] = { section: 'hat', count: hatcount, blocks: hatblocks};
+  assessment["hat"] = { section: 'hat', count: hatcount, blocks: hatblocks };
 
-  assessment["sequencing"] = { section: 'sequencing', longest: longestscript, tip: tips['long_scripts']};
+  assessment["sequencing"] = { section: 'sequencing', longest: longestscript, tip: tips['long_scripts'] };
 
-  assessment["interaction"] = { section: 'interaction', count: interactioncount, blocks: interactionblocks, tip: ""};
+  assessment["interaction"] = { section: 'interaction', count: interactioncount, blocks: interactionblocks, tip: "" };
 
-  assessment["repetition"] = { section: 'repetition', count: repetitioncount, blocks: repetitionblocks, tip: ""};
+  assessment["repetition"] = { section: 'repetition', count: repetitioncount, blocks: repetitionblocks, tip: "" };
 
-  assessment["variables"] = { section: 'variables', count: variablecount, tip: ""};
+  assessment["variables"] = { section: 'variables', count: variablecount, tip: "" };
 
-  assessment["conditional"] = { section: 'conditional', count: conditionalcount, blocks: conditionalblocks, booleancount: booleancount, booleanblocks: booleanblocks, tip: ""};
+  assessment["conditional"] = { section: 'conditional', count: conditionalcount, blocks: conditionalblocks, booleancount: booleancount, booleanblocks: booleanblocks, tip: "" };
 
   res.send({ categories: counts, total: total, scripts: scripts, project: req.params.projectId, assessment: assessment });
 });
@@ -385,11 +377,11 @@ app.use('/static', express.static('public'));
 app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
-  res.render('index', {projectId: ("enter project id"), tab: ("analysis") });
+  res.render('index', { projectId: ("enter project id"), tab: ("analysis") });
 });
 
 app.get('/:projectId/:tab?', (req, res) => {
-  res.render('index', {projectId: (req.params.projectId || "enter project id"), tab: (req.params.tab || "analysis") });
+  res.render('index', { projectId: (req.params.projectId || "enter project id"), tab: (req.params.tab || "analysis") });
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
