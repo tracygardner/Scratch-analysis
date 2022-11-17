@@ -19,13 +19,15 @@ import sbutil from 'sb-util';
 
 const { loadProjectJson, loadSb3, loadCloudId, BlockCollection, SpriteCollection, Block, ScratchProject, Sprite, Stage, Variable, VariableCollection, CollectionWrapper } = sbutil;
 
+var blockcode
+
 // Get the blocks code for a block within a script
 function getScriptBlocksCode(next, sprite) {
 
   //console.log(`Generating: ${sprite.prop('name')}`);
 
   var opcode = next.prop('opcode');
-  var blockcode = opcode2sb[opcode];
+  blockcode = opcode2sb[opcode];
 
   switch (opcode) {
 
@@ -62,7 +64,7 @@ function fieldReplace(block, sprite) {
 
   //console.log(`Field replace: ${sprite.prop('name')}: ${block.prop('opcode')}`);
 
-  var blockcode = opcode2sb[block.prop('opcode')];
+  blockcode = opcode2sb[block.prop('opcode')];
 
   var fields = block.prop('fields');
   //console.log("Replacing fields");
@@ -144,7 +146,7 @@ function generateScript(first, sprite) {
   do {
     var opcode = next.prop('opcode');
     getScriptBlocksCode(next, sprite);
-    var blockcode = opcode2sb[opcode];
+     //= opcode2sb[opcode];
     //console.log(`${opcode}: ${blockcode}`);
 
     if (blockcode)
